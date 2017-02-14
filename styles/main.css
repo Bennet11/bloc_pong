@@ -3,8 +3,6 @@ canvas {
   margin: auto;
   display: block;
   position: relative;
-  width: 800px;
-  height: 500px;
   border-style: solid;
   border-width: thick;
   background-color: rgb(123,123,123);
