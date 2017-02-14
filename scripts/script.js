@@ -50,11 +50,11 @@ var ball = new Ball(400, 250, 10);
 function render(context) {
   player.render(context);
   computer.render(context);
-  ball.render(context)
+  ball.render(context);
 }
 
 window.onload = function () {
   var canvas = document.getElementById("myPong");
   var context = canvas.getContext("2d");
-  render(context)
+  render(context);
 }
