@@ -10,7 +10,7 @@ var context = canvas.getContext("2d");
 var player = new Player();
 var computer = new Computer();
 var ball = new Ball(400, 250, 10);
-var keyDown = {};
+
 
 
 function Paddle(x, y, width, height) {
@@ -51,8 +51,9 @@ Paddle.prototype.move = function(x, y) {
   if (this.x < 0) {
     this.x = 0;
     this.xspeed = 0;
-  } else if () {
-
+  } else if (this.x + this.width > 800) {
+    this.x = 800 - this.width;
+    this.xspeed = 0;
   }
 };
 
@@ -81,16 +82,21 @@ function render(context) {
 
 function step() {
   render(context);
-  animate(step);
-
+  console.log("render");
 };
+
+animate(step);
 
 window.onload = function (keyCode) {
   window.addEventListener('keydown', function(event) {
-    keyDown(event.keyCode) = true;
-  });
+    event.keyDown = true;
+    if (event.which === 38) {
+      player.paddle.move(0,1)
+      console.log("up arrow");
+      animate(step);
+    } else if(event.which === 40) {
+      console.log("down arrow");
+    }
 
-  window.addEventListener('keyup', function(event) {
-    keyDown(event.keyCode) = false;
   });
 }
