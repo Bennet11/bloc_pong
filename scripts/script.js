@@ -18,8 +18,7 @@ function Paddle(x, y, width, height) {
   this.y = y;
   this.width = width;
   this.height = height;
-  this.xspeed = 0;
-  this.yspeed = 0;
+  this.speed = 10;
 }
 
 function Ball(x, y, radius) {
@@ -43,18 +42,13 @@ Paddle.prototype.render = function(context) {
   context.fill();
 };
 
-Paddle.prototype.move = function(x, y) {
-  this.x += x;
-  this.y += y;
-  this.xspeed = x;
-  this.yspeed = y;
-  if (this.x < 0) {
-    this.x = 0;
-    this.xspeed = 0;
-  } else if (this.x + this.width > 800) {
-    this.x = 800 - this.width;
-    this.xspeed = 0;
-  }
+Paddle.prototype.move = function(direction) {
+ if(direction === "up" && this.y >= 10){
+   this.y -= this.speed;
+ }
+ else if(direction === "down" && this.y < (context.canvas.height - 70)){
+   this.y += this.speed;
+ }
 };
 
 Ball.prototype.render = function(context) {
@@ -74,7 +68,15 @@ Computer.prototype.render = function(context) {
   this.paddle.render(context);
 };
 
+var drawCanvas = function(){
+  context.clearRect(0, 0, 800, 500);
+  context.fillStyle = "gray";
+  context.fill();
+  context.fillRect(0, 0, 800, 500);
+}
+
 function render(context) {
+  drawCanvas();
   player.render(context);
   computer.render(context);
   ball.render(context);
@@ -91,11 +93,11 @@ window.onload = function (keyCode) {
   window.addEventListener('keydown', function(event) {
     event.keyDown = true;
     if (event.which === 38) {
-      player.paddle.move(0,1)
-      console.log("up arrow");
+      player.paddle.move("up")
       animate(step);
     } else if(event.which === 40) {
-      console.log("down arrow");
+      player.paddle.move("down");
+      animate(step);
     }
 
   });
