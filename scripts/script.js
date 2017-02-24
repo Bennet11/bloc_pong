@@ -9,8 +9,9 @@ var canvas = document.getElementById("myPong");
 var context = canvas.getContext("2d");
 var player = new Player();
 var computer = new Computer();
-var ball = new Ball(400, 250, 10);
-
+var ball = new Ball(400, 250, 5);
+var W = context.canvas.width;
+var H = context.canvas.height;
 
 
 function Paddle(x, y, width, height) {
@@ -25,6 +26,8 @@ function Ball(x, y, radius) {
   this.x = x;
   this.y = y;
   this.radius = radius
+  this.xSpeed = 5;
+  this.ySpeed = 5;
 }
 
 function Player() {
@@ -53,12 +56,42 @@ Paddle.prototype.move = function(direction) {
 
 Ball.prototype.render = function(context) {
   context.beginPath();
-  context.arc(40, 40, this.radius, 0, 2*Math.PI );
+  context.arc(400, 250, this.radius, 0, 2*Math.PI );
   context.strokeStyle = "black";
   context.stroke();
   context.fillStyle = "black";
   context.fill();
+  ball.move();
 };
+
+Ball.prototype.move = function() {
+  if(this.x < 5) {
+    console.log("Computer Wins");
+  }
+  else if(this.x > W) {
+    console.log("Player Wins");
+  }
+  else if(this.y - this.radius <= 0) {
+    this.y += this.ySpeed
+  }
+  else if(this.y + this.radius >= H) {
+    this.y -= this.ySpeed
+  }
+  else if(this.x - this.radius <= player.paddle.x + player.paddle.width
+    && this.y <= player.paddle.y + player.paddle.height
+    && this.y >= player.paddle.y) {
+      paddleHit();
+    }
+  else if(this.x + this.radius >= computer.paddle.x + computer.paddle.width
+    && this.y <= computer.paddle.y + computer.paddle.height
+    && this.y <= computer.paddle.y) {
+      paddleHit();
+  }
+};
+
+function paddleHit() {
+  ball.radius <
+}
 
 Player.prototype.render = function(context) {
   this.paddle.render(context);
@@ -84,7 +117,7 @@ function render(context) {
 
 function step() {
   render(context);
-  console.log("render");
+  ball.move();
 };
 
 animate(step);
