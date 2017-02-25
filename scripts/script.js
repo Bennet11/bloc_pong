@@ -26,8 +26,8 @@ function Ball(x, y, radius) {
   this.x = x;
   this.y = y;
   this.radius = radius
-  this.xSpeed = 5;
-  this.ySpeed = 5;
+  this.xSpeed = Math.random() < 0.5 ? -5 : 5;
+  this.ySpeed = Math.random() < 0.5 ? Math.floor(Math.random() * 4) - 5 : Math.floor(Math.random() * 4) + 1;
 }
 
 function Player() {
@@ -56,26 +56,30 @@ Paddle.prototype.move = function(direction) {
 
 Ball.prototype.render = function(context) {
   context.beginPath();
-  context.arc(400, 250, this.radius, 0, 2*Math.PI );
+  context.arc(this.x, this.y, this.radius, 0, 2*Math.PI );
   context.strokeStyle = "black";
   context.stroke();
   context.fillStyle = "black";
   context.fill();
   ball.move();
+  animate(step);
 };
 
 Ball.prototype.move = function() {
-  if(this.x < 5) {
+  this.x += this.xSpeed;
+  this.y += this.ySpeed;
+
+  if(this.x < 0) {
     console.log("Computer Wins");
   }
-  else if(this.x > W) {
+  else if(this.x > (W - 5)) {
     console.log("Player Wins");
   }
-  else if(this.y - this.radius <= 0) {
-    this.y += this.ySpeed
+  else if(this.y - this.radius <= (0 + 5)) {
+    this.ySpeed *= -1
   }
-  else if(this.y + this.radius >= H) {
-    this.y -= this.ySpeed
+  else if(this.y + this.radius >= (H + 5)) {
+    this.ySpeed *= -1
   }
   else if(this.x - this.radius <= player.paddle.x + player.paddle.width
     && this.y <= player.paddle.y + player.paddle.height
@@ -84,13 +88,19 @@ Ball.prototype.move = function() {
     }
   else if(this.x + this.radius >= computer.paddle.x + computer.paddle.width
     && this.y <= computer.paddle.y + computer.paddle.height
-    && this.y <= computer.paddle.y) {
+    && this.y >= computer.paddle.y) {
       paddleHit();
   }
 };
 
 function paddleHit() {
-  ball.radius <
+  var a = 0.0001, b = 0.005, c = 0.5, x = null;
+  x = ball.ySpeed < 0 ? player.paddle.y + player.paddle.height - ball.y : ball.y - player.paddle.y;
+       // Parabolic function
+       var speedMultiplier = (a * (x * x)) + (b * x) + c;
+       
+       ball.xSpeed *= -1;
+       ball.ySpeed *= speedMultiplier;
 }
 
 Player.prototype.render = function(context) {
@@ -117,7 +127,6 @@ function render(context) {
 
 function step() {
   render(context);
-  ball.move();
 };
 
 animate(step);
@@ -127,10 +136,8 @@ window.onload = function (keyCode) {
     event.keyDown = true;
     if (event.which === 38) {
       player.paddle.move("up")
-      animate(step);
     } else if(event.which === 40) {
       player.paddle.move("down")
-      animate(step);
     }
   });
 }
