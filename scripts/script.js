@@ -10,6 +10,7 @@ var context = canvas.getContext("2d");
 var player = new Player();
 var computer = new Computer();
 var ball = new Ball(400, 250, 5);
+var location = ball.x;
 var W = context.canvas.width;
 var H = context.canvas.height;
 
@@ -19,7 +20,7 @@ function Paddle(x, y, width, height) {
   this.y = y;
   this.width = width;
   this.height = height;
-  this.speed = 10;
+  this.speed = 25;
 }
 
 function Ball(x, y, radius) {
@@ -69,11 +70,8 @@ Ball.prototype.move = function() {
   this.x += this.xSpeed;
   this.y += this.ySpeed;
 
-  if(this.x < 0) {
-    console.log("Computer Wins");
-  }
-  else if(this.x > (W - 5)) {
-    console.log("Player Wins");
+  if(this.x <= 0 || this.x > (W - 5)) {
+    this.wallScore();
   }
   else if(this.y - this.radius <= (0 + 5)) {
     this.ySpeed *= -1
@@ -93,12 +91,21 @@ Ball.prototype.move = function() {
   }
 };
 
+Ball.prototype.wallScore = function() {
+  this.x = W / 2;
+  this.y = H / 2;
+  this.xSpeed = 0;
+  this.ySpeed = 0;
+
+  // setTimeout(reset(location), 3000);
+};
+
 function paddleHit() {
   var a = 0.0001, b = 0.005, c = 0.5, x = null;
   x = ball.ySpeed < 0 ? player.paddle.y + player.paddle.height - ball.y : ball.y - player.paddle.y;
        // Parabolic function
        var speedMultiplier = (a * (x * x)) + (b * x) + c;
-       
+
        ball.xSpeed *= -1;
        ball.ySpeed *= speedMultiplier;
 }
@@ -111,11 +118,24 @@ Computer.prototype.render = function(context) {
   this.paddle.render(context);
 };
 
+Computer.prototype.update = function(context) {
+  this.ball.render(context)
+};
+
 var drawCanvas = function() {
   context.clearRect(0, 0, 800, 500);
   context.fillStyle = "gray";
   context.fill();
   context.fillRect(0, 0, 800, 500);
+};
+
+
+
+function reset(location) {
+  return function() {
+    ball.xSpeed = location < W / 2 ? -1 : 1;
+    this.ySpeed = Math.random() < 0.5 ? Math.floor(Math.random() * 4) - 5 : Math.floor(Math.random() * 4) + 1;
+  }
 };
 
 function render(context) {
@@ -128,6 +148,7 @@ function render(context) {
 function step() {
   render(context);
 };
+
 
 animate(step);
 
