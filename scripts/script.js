@@ -11,6 +11,10 @@ var player = new Player();
 var computer = new Computer();
 var ball = new Ball(400, 250, 5);
 var position = ball.x;
+var playerScore = 0;
+var computerScore = 0;
+var player1Element = document.getElementById('player1');
+var player2Element = document.getElementById('player2');
 var W = context.canvas.width;
 var H = context.canvas.height;
 
@@ -90,6 +94,9 @@ Ball.prototype.move = function() {
   this.y += this.ySpeed;
 
   if(this.x <= 0 || this.x > (W - 5)) {
+    this.x <= 0 ? computerScore++ : playerScore++;
+    player1Element.innerHTML = playerScore;
+    player2Element.innerHTML = computerScore;
     this.wallScore();
   }
   else if(this.y - this.radius <= (0 + 5)) {

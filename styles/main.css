@@ -8,3 +8,15 @@ canvas {
 #title {
   text-align: center;
 }
+
+#player1 {
+  position: relative;
+  display: inline-block;
+  margin-left: 230px;
+}
+
+#player2 {
+  position: relative;
+  display: inline-block;
+  margin-left: 781px;
+}
