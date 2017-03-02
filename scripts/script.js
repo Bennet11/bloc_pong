@@ -10,7 +10,7 @@ var context = canvas.getContext("2d");
 var player = new Player();
 var computer = new Computer();
 var ball = new Ball(400, 250, 5);
-var location = ball.x;
+var position = ball.x;
 var W = context.canvas.width;
 var H = context.canvas.height;
 
@@ -39,20 +39,20 @@ function Computer() {
   this.paddle = new Paddle(787, 275, 8, 70);
 }
 
+Player.prototype.render = function(context) {
+  this.paddle.render(context);
+};
+
+Computer.prototype.render = function(context) {
+  this.paddle.render(context);
+};
+
+
 Paddle.prototype.render = function(context) {
   context.beginPath();
   context.rect(this.x, this.y, this.width, this.height);
   context.fillStyle = "white";
   context.fill();
-};
-
-Paddle.prototype.move = function(direction) {
-  if(direction === "up" && this.y > 10){
-    this.y -= this.speed;
-  }
-  else if(direction === "down" && this.y < (context.canvas.height - 80)) {
-    this.y += this.speed;
-  }
 };
 
 Ball.prototype.render = function(context) {
@@ -65,6 +65,25 @@ Ball.prototype.render = function(context) {
   ball.move();
   animate(step);
 };
+
+Paddle.prototype.move = function(direction) {
+  if(direction === "up" && this.y > 10){
+    this.y -= this.speed;
+  }
+  else if(direction === "down" && this.y < (context.canvas.height - 80)) {
+    this.y += this.speed;
+  }
+};
+
+Computer.prototype.update = function() {
+  var yCenter = this.y + this.height / 2;
+  if (this.paddle.y >= ball.y) {
+    this.paddle.move("up");
+  } else if (this.paddle.y <= ball.y) {
+    this.paddle.move("down");
+  }
+};
+
 
 Ball.prototype.move = function() {
   this.x += this.xSpeed;
@@ -97,7 +116,7 @@ Ball.prototype.wallScore = function() {
   this.xSpeed = 0;
   this.ySpeed = 0;
 
-  // setTimeout(reset(location), 3000);
+  setTimeout(reset(position), 3000);
 };
 
 function paddleHit() {
@@ -110,17 +129,12 @@ function paddleHit() {
        ball.ySpeed *= speedMultiplier;
 }
 
-Player.prototype.render = function(context) {
-  this.paddle.render(context);
-};
-
-Computer.prototype.render = function(context) {
-  this.paddle.render(context);
-};
-
-Computer.prototype.update = function(context) {
-  this.ball.render(context)
-};
+function reset(location) {
+  return function () {
+    ball.xSpeed = Math.random() < 0.5 ? Math.floor(Math.random() * (7 - 4 + 1) - 4): Math.floor(Math.random() * (7 - 4 + 1) + 4);
+    ball.ySpeed = Math.random() < 0.5 ? Math.floor(Math.random() * 4) - 5 : Math.floor(Math.random() * 4) + 1;
+  };
+}
 
 var drawCanvas = function() {
   context.clearRect(0, 0, 800, 500);
@@ -129,26 +143,17 @@ var drawCanvas = function() {
   context.fillRect(0, 0, 800, 500);
 };
 
-
-
-function reset(location) {
-  return function() {
-    ball.xSpeed = location < W / 2 ? -1 : 1;
-    this.ySpeed = Math.random() < 0.5 ? Math.floor(Math.random() * 4) - 5 : Math.floor(Math.random() * 4) + 1;
-  }
-};
-
 function render(context) {
   drawCanvas();
   player.render(context);
   computer.render(context);
   ball.render(context);
+  computer.update();
 }
 
 function step() {
   render(context);
 };
-
 
 animate(step);
 
