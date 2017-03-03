@@ -24,7 +24,7 @@ function Paddle(x, y, width, height) {
   this.y = y;
   this.width = width;
   this.height = height;
-  this.speed = 25;
+  this.speed = 2;
 }
 
 function Ball(x, y, radius) {
@@ -80,10 +80,10 @@ Paddle.prototype.move = function(direction) {
 };
 
 Computer.prototype.update = function() {
-  var yCenter = this.y + this.height / 2;
-  if (this.paddle.y >= ball.y) {
+  // var yCenter = this.y + this.height / 2;
+  if ((this.paddle.y - 1) > ball.y ) {
     this.paddle.move("up");
-  } else if (this.paddle.y <= ball.y) {
+  } else if (this.paddle.y < (ball.y - 1)) {
     this.paddle.move("down");
   }
 };
