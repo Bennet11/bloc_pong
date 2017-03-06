@@ -20,3 +20,33 @@ canvas {
   display: inline-block;
   margin-left: 781px;
 }
+
+.hidden {
+  display: none;
+}
+
+#playerWins {
+  position: relative;
+  font-size 50px;
+  text-align: center;
+  width: 300px;
+  height: 50px;
+  left: 470px;
+  border: 5px solid;
+  border-color: black;
+  paddng: 10px;
+  background: gray;
+}
+
+#playerLose {
+  position: relative;
+  font-size 50px;
+  text-align: center;
+  width: 300px;
+  height: 50px;
+  left: 470px;
+  border: 5px solid;
+  border-color: black;
+  paddng: 10px;
+  background: gray;
+}

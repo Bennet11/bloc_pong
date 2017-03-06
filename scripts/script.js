@@ -17,6 +17,8 @@ var player1Element = document.getElementById('player1');
 var player2Element = document.getElementById('player2');
 var W = context.canvas.width;
 var H = context.canvas.height;
+var playerWonE = document.getElementById('playerWins');
+var playerLostE = document.getElementById('playerLose');
 
 
 function Paddle(x, y, width, height) {
@@ -80,8 +82,7 @@ Paddle.prototype.move = function(direction) {
 };
 
 Computer.prototype.update = function() {
-  // var yCenter = this.y + this.height / 2;
-  if ((this.paddle.y - 1) > ball.y ) {
+  if ((this.paddle.y - 1)> ball.y) {
     this.paddle.move("up");
   } else if (this.paddle.y < (ball.y - 1)) {
     this.paddle.move("down");
@@ -123,7 +124,17 @@ Ball.prototype.wallScore = function() {
   this.xSpeed = 0;
   this.ySpeed = 0;
 
-  setTimeout(reset(position), 3000);
+  if(playerScore === 1 && playerScore > computerScore) {
+    gameOver('player');
+    resetScore();
+  }
+  else if(computerScore === 1 && computerScore > playerScore) {
+    gameOver('computer');
+    resetScore();
+  }
+  else {
+    setTimeout(reset(position), 3000);
+  }
 };
 
 function paddleHit() {
@@ -140,8 +151,38 @@ function reset(location) {
   return function () {
     ball.xSpeed = Math.random() < 0.5 ? Math.floor(Math.random() * (7 - 4 + 1) - 4): Math.floor(Math.random() * (7 - 4 + 1) + 4);
     ball.ySpeed = Math.random() < 0.5 ? Math.floor(Math.random() * 4) - 5 : Math.floor(Math.random() * 4) + 1;
+    playerWonE.style.display = "none";
+    playerLostE.style.display = "none";
   };
 }
+
+function gameOver(winner) {
+  this.x = W / 2;
+  this.y = H / 2;
+  this.xSpeed = 0;
+  this.ySpeed = 0;
+
+  if (winner === 'player') {
+    console.log("p1");
+    playerWonE.innerText = "Player Won! Please refresh the page to play again.";
+    playerWonE.style.display = "block";
+
+  }
+  else if (winner === 'computer') {
+    console.log("comp");
+    playerLostE.innerText = "Computer Won! Please refresh the page to play again.";
+    playerLostE.style.display = "block";
+  }
+}
+
+function resetScore() {
+  player1Element.innerText = 0;
+  player2Element.innerText = 0;
+  playerScore = 0;
+  computerScore = 0;
+}
+
+
 
 var drawCanvas = function() {
   context.clearRect(0, 0, 800, 500);
@@ -156,6 +197,7 @@ function render(context) {
   computer.render(context);
   ball.render(context);
   computer.update();
+  gameOver();
 }
 
 function step() {
